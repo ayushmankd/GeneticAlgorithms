@@ -1,13 +1,12 @@
 # Solving SCH Problem using NSGAII
-from SCH_Problem import SCH_Problem
 from jmetal.algorithm.multiobjective.nsgaii import NSGAII
 from jmetal.operator import SBXCrossover, PolynomialMutation
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from jmetal.util.observer import ProgressBarObserver, VisualizerObserver
 from jmetal.lab.visualization import Plot, InteractivePlot
-
+from jmetal.problem.multiobjective.zdt import ZDT2
 if __name__ == '__main__':
-  problem = SCH_Problem()
+  problem = ZDT2()
   max_evaluations = 20000
   algorithm = NSGAII(
     problem = problem,

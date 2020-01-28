@@ -8,11 +8,11 @@ from jmetal.lab.visualization import Plot, InteractivePlot
 
 if __name__ == '__main__':
   problem = POL_Problem()
-  max_evaluations = 10000
+  max_evaluations = 20000
   algorithm = NSGAII(
     problem = problem,
-    population_size = 10,
-    offspring_population_size = 10,
+    population_size = 100,
+    offspring_population_size = 100,
     mutation=PolynomialMutation(probability=0.05, distribution_index=20),
     crossover=SBXCrossover(probability=1.0, distribution_index=20),
     termination_criterion=StoppingByEvaluations(max=max_evaluations)
