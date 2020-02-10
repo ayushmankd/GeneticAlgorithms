@@ -8,7 +8,7 @@ from jmetal.lab.visualization import Plot, InteractivePlot
 
 if __name__ == '__main__':
   problem = SCH_Problem()
-  max_evaluations = 20000
+  max_evaluations = 1000
   algorithm = NSGAII(
     problem = problem,
     population_size = 100,

@@ -1,12 +1,9 @@
-from jmetal.core.problem import FloatProblem
-from jmetal.core.solution import FloatSolution
 from jmetal.algorithm.multiobjective.nsgaii import NSGAII
 from jmetal.util.observer import ProgressBarObserver, VisualizerObserver
 from jmetal.util.solutions import print_function_values_to_file, print_variables_to_file, read_solutions
 from jmetal.util.solutions.comparator import DominanceComparator
 from jmetal.util.termination_criterion import StoppingByEvaluations
 from jmetal.lab.visualization import Plot, InteractivePlot
-from jmetal.operator import SBXCrossover, PolynomialMutation
 import random
 # To Define The Problem and Solution
 from jmetal.core.problem import PermutationProblem
@@ -14,33 +11,37 @@ from jmetal.core.solution import PermutationSolution
 # To Use Genetic Algorithm
 from jmetal.algorithm.singleobjective.genetic_algorithm import GeneticAlgorithm
 from jmetal.operator import BinaryTournamentSelection
-from jmetal.operator.crossover import PMXCrossover
+from jmetal.operator.crossover import PMXCrossover, Order1Crossover
 from jmetal.operator.mutation import PermutationSwapMutation
-from jmetal.problem.singleobjective.tsp import TSP
 from jmetal.util.density_estimator import CrowdingDistance
 from jmetal.util.observer import PrintObjectivesObserver
 from jmetal.util.ranking import FastNonDominatedRanking
 from jmetal.util.solutions.comparator import MultiComparator
 from jmetal.util.termination_criterion import StoppingByEvaluations
+from CreateMatrix import CreateMatrix
 class NSGA(PermutationProblem):
   def __init__(self):
     super(NSGA, self).__init__()
     # Example
     distance_matrix = [
-      [0, 23, 25, 15, 17],
-      [23, 0, 36, 9, 18],
-      [25, 36, 0, 23, 4],
-      [15, 9, 23, 0, 16],
-      [17, 18, 4, 16, 0]
+      [0, 81, 72, 55, 81, 3],
+      [81, 0, 3, 44, 9, 40],
+      [72, 3, 0, 87, 72, 21],
+      [55, 44, 87, 0, 67, 25],
+      [81, 9, 77, 67, 0, 93],
+      [3, 40, 21, 25, 93, 0]
     ]
     cost_matrix = [
-      [0, 30, 13, 6, 24],
-      [30, 0, 18, 8, 19],
-      [13, 18, 0, 22, 42],
-      [6, 8, 22, 0, 21],
-      [24, 19, 42, 21, 0]
+      [0, 82, 14, 14, 43, 47],
+      [82, 0, 61, 76, 29, 47],
+      [14, 61, 0, 29, 31, 51],
+      [14, 76, 29, 0, 78, 67],
+      [43, 29, 31, 78, 0, 28],
+      [47, 47, 51, 67, 28, 0]
     ]
-    number_of_cities = 5
+    # distance_matrix = CreateMatrix('kroA100.tsp')
+    # cost_matrix = CreateMatrix('kroB100.tsp')
+    number_of_cities = len(distance_matrix[0])
     # # # #
     self.distance_matrix = distance_matrix
     self.cost_matrix = cost_matrix
@@ -84,16 +85,15 @@ class NSGA(PermutationProblem):
         return 'MultiObjective TSP'
 if __name__ == '__main__':
   problem = NSGA()
-  max_evaluations = 10000
+  max_evaluations = 20000
   algorithm = NSGAII(
     problem=problem,
-    population_size=2,
-    offspring_population_size=2,
-    mutation=PermutationSwapMutation(probability=1.0 / 6),
-    crossover=PMXCrossover(probability=0.5),
-    # crossover=PMXCrossover(0.8),
+    population_size=20,
+    offspring_population_size=20,
+    mutation=PermutationSwapMutation(probability=0.2),
+    # crossover=PMXCrossover(probability=0.9),
+    crossover=Order1Crossover(probability=0.9),
     termination_criterion=StoppingByEvaluations(max=max_evaluations),
-    # dominance_comparator=DominanceComparator()
   )
   algorithm.observable.register(observer=ProgressBarObserver(max=max_evaluations))
   algorithm.observable.register(observer=VisualizerObserver(reference_front=problem.reference_front))
